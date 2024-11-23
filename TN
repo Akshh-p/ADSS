@@ -1,0 +1,94 @@
+class ThreadedNode {
+    int data;
+    ThreadedNode left, right;
+    boolean isLeftThread, isRightThread;
+
+    ThreadedNode(int data) {
+        this.data = data;
+        this.left = this.right = null;
+        this.isLeftThread = this.isRightThread = false;
+    }
+}
+
+class ThreadedBinaryTree {
+    private ThreadedNode root;
+
+    // Insert a node into the threaded binary tree
+    public void insert(int data) {
+        if (root == null) {
+            root = new ThreadedNode(data);
+            return;
+        }
+        ThreadedNode parent = null, current = root;
+
+        while (current != null) {
+            parent = current;
+            if (data < current.data) {
+                if (!current.isLeftThread) {
+                    current = current.left;
+                } else {
+                    break;
+                }
+            } else if (data > current.data) {
+                if (!current.isRightThread) {
+                    current = current.right;
+                } else {
+                    break;
+                }
+            } else {
+                return; // Duplicate data not allowed
+            }
+        }
+
+        ThreadedNode newNode = new ThreadedNode(data);
+        if (data < parent.data) {
+            newNode.left = parent.left;
+            newNode.right = parent;
+            parent.isLeftThread = true;
+            parent.left = newNode;
+        } else {
+            newNode.right = parent.right;
+            newNode.left = parent;
+            parent.isRightThread = true;
+            parent.right = newNode;
+        }
+    }
+
+    // Perform inorder traversal using threads
+    public void inorderTraversal() {
+        ThreadedNode current = getLeftmost(root);
+        while (current != null) {
+            System.out.print(current.data + " ");
+            if (current.isRightThread) {
+                current = current.right;
+            } else {
+                current = getLeftmost(current.right);
+            }
+        }
+    }
+
+    // Helper function to find the leftmost node in a subtree
+    private ThreadedNode getLeftmost(ThreadedNode node) {
+        if (node == null) return null;
+        while (node.left != null && !node.isLeftThread) {
+            node = node.left;
+        }
+        return node;
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        ThreadedBinaryTree tbt = new ThreadedBinaryTree();
+        tbt.insert(20);
+        tbt.insert(10);
+        tbt.insert(30);
+        tbt.insert(5);
+        tbt.insert(15);
+        tbt.insert(25);
+        tbt.insert(35);
+
+        System.out.println("Inorder Traversal of Threaded Binary Tree:");
+        tbt.inorderTraversal();
+    }
+}
