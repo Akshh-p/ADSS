@@ -1,0 +1,108 @@
+// Node class to represent each element in the stack
+class Node {
+    int data;       // Data of the node
+    Node next;      // Pointer to the next node
+
+    // Constructor to initialize the node
+    public Node(int data) {
+        this.data = data;
+        this.next = null;
+    }
+}
+
+// Stack class implementing stack using linked list
+class Stack {
+    Node top;  // Points to the top of the stack
+    int size;  // To track the number of elements in the stack
+
+    // Constructor to initialize the stack
+    public Stack() {
+        top = null;  // Initially the stack is empty
+        size = 0;    // Size is 0 when stack is empty
+    }
+
+    // Push method to add element to the top of the stack
+    public void push(int data) {
+        Node newNode = new Node(data);  // Create a new node
+        newNode.next = top;             // Link new node to the previous top
+        top = newNode;                  // Update top to point to new node
+        size++;                         // Increment the size of the stack
+    }
+
+    // Pop method to remove and return the top element
+    public int pop() {
+        if (top == null) {
+            System.out.println("Stack is empty");
+            return -1;  // Return an invalid value if the stack is empty
+        }
+        int poppedData = top.data;   // Get the top element's data
+        top = top.next;              // Move top to the next node
+        size--;                      // Decrease the size of the stack
+        return poppedData;           // Return the popped element's data
+    }
+
+    // Peek method to view the top element without removing it
+    public int peek() {
+        if (top == null) {
+            System.out.println("Stack is empty");
+            return -1;  // Return an invalid value if the stack is empty
+        }
+        return top.data;  // Return the top element's data
+    }
+
+    // isEmpty method to check if the stack is empty
+    public boolean isEmpty() {
+        return top == null;  // Stack is empty if top is null
+    }
+
+    // Size method to return the number of elements in the stack
+    public int size() {
+        return size;  // Return the size of the stack
+    }
+
+    // Method to display the stack elements (for debugging)
+    public void display() {
+        if (top == null) {
+            System.out.println("Stack is empty");
+            return;
+        }
+        Node current = top;
+        while (current != null) {
+            System.out.print(current.data + " ");
+            current = current.next;
+        }
+        System.out.println();
+    }
+}
+
+// Example usage
+public class Main {
+    public static void main(String[] args) {
+        Stack stack = new Stack();
+
+        // Pushing elements to the stack
+        stack.push(10);
+        stack.push(20);
+        stack.push(30);
+
+        // Displaying the stack
+        System.out.print("Stack: ");
+        stack.display();  // Output: 30 20 10
+
+        // Peeking the top element
+        System.out.println("Top element: " + stack.peek());  // Output: 30
+
+        // Popping the top element
+        System.out.println("Popped element: " + stack.pop());  // Output: 30
+
+        // Displaying the stack after pop
+        System.out.print("Stack after pop: ");
+        stack.display();  // Output: 20 10
+
+        // Checking if the stack is empty
+        System.out.println("Is stack empty? " + stack.isEmpty());  // Output: false
+
+        // Checking the size of the stack
+        System.out.println("Size of stack: " + stack.size());  // Output: 2
+    }
+}
