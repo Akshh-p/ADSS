@@ -1,0 +1,120 @@
+import java.util.Scanner;
+
+class PhoneBook {
+    static class Contact {
+        String name, phone;
+        Contact left, right;
+
+        Contact(String name, String phone) {
+            this.name = name;
+            this.phone = phone;
+        }
+    }
+
+    private Contact root;
+
+    // Insert or update a contact
+    void add(String name, String phone) {
+        root = addRec(root, name, phone);
+    }
+
+    private Contact addRec(Contact node, String name, String phone) {
+        if (node == null) return new Contact(name, phone);
+        if (name.compareToIgnoreCase(node.name) < 0) node.left = addRec(node.left, name, phone);
+        else if (name.compareToIgnoreCase(node.name) > 0) node.right = addRec(node.right, name, phone);
+        else node.phone = phone; // Update
+        return node;
+    }
+
+    // Search for a contact
+    String search(String name) {
+        Contact c = searchRec(root, name);
+        return c == null ? null : c.phone;
+    }
+
+    private Contact searchRec(Contact node, String name) {
+        if (node == null || name.equalsIgnoreCase(node.name)) return node;
+        return name.compareToIgnoreCase(node.name) < 0 ? searchRec(node.left, name) : searchRec(node.right, name);
+    }
+
+    // Delete a contact
+    void delete(String name) {
+        root = deleteRec(root, name);
+    }
+
+    private Contact deleteRec(Contact node, String name) {
+        if (node == null) return null;
+        if (name.compareToIgnoreCase(node.name) < 0) node.left = deleteRec(node.left, name);
+        else if (name.compareToIgnoreCase(node.name) > 0) node.right = deleteRec(node.right, name);
+        else {
+            if (node.left == null) return node.right;
+            if (node.right == null) return node.left;
+            node.name = findMin(node.right).name;
+            node.phone = findMin(node.right).phone;
+            node.right = deleteRec(node.right, node.name);
+        }
+        return node;
+    }
+
+    private Contact findMin(Contact node) {
+        while (node.left != null) node = node.left;
+        return node;
+    }
+
+    // Display all contacts
+    void display() {
+        inOrder(root);
+    }
+
+    private void inOrder(Contact node) {
+        if (node != null) {
+            inOrder(node.left);
+            System.out.println(node.name + ": " + node.phone);
+            inOrder(node.right);
+        }
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        PhoneBook phoneBook = new PhoneBook();
+        Scanner sc = new Scanner(System.in);
+        int choice;
+
+        do {
+            System.out.println("\n1. Add/Update Contact 2. Search 3. Delete 4. Display 5. Exit");
+            choice = sc.nextInt();
+            sc.nextLine(); // Consume newline
+            switch (choice) {
+                case 1:
+                    System.out.print("Name: ");
+                    String name = sc.nextLine();
+                    System.out.print("Phone: ");
+                    String phone = sc.nextLine();
+                    phoneBook.add(name, phone);
+                    break;
+                case 2:
+                    System.out.print("Name to search: ");
+                    name = sc.nextLine();
+                    String result = phoneBook.search(name);
+                    System.out.println(result != null ? "Phone: " + result : "Not found!");
+                    break;
+                case 3:
+                    System.out.print("Name to delete: ");
+                    name = sc.nextLine();
+                    phoneBook.delete(name);
+                    break;
+                case 4:
+                    System.out.println("Phone Book:");
+                    phoneBook.display();
+                    break;
+                case 5:
+                    System.out.println("Goodbye!");
+                    break;
+                default:
+                    System.out.println("Invalid choice!");
+            }
+        } while (choice != 5);
+        sc.close();
+    }
+}
