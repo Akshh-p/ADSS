@@ -1,0 +1,85 @@
+import java.util.*;
+
+class Main {
+    static class Edge {
+        int destination, weight;
+
+        Edge(int destination, int weight) {
+            this.destination = destination;
+            this.weight = weight;
+        }
+    }
+
+    static class Graph {
+        int vertices;
+        LinkedList<Edge>[] adjacencyList;
+
+        Graph(int vertices) {
+            this.vertices = vertices;
+            adjacencyList = new LinkedList[vertices];
+            for (int i = 0; i < vertices; i++) {
+                adjacencyList[i] = new LinkedList<>();
+            }
+        }
+
+        void addEdge(int source, int destination, int weight) {
+            adjacencyList[source].add(new Edge(destination, weight));
+            adjacencyList[destination].add(new Edge(source, weight)); // Undirected graph
+        }
+
+        void primMST() {
+            boolean[] inMST = new boolean[vertices];
+            int[] key = new int[vertices];
+            int[] parent = new int[vertices];
+            PriorityQueue<Edge> pq = new PriorityQueue<>(Comparator.comparingInt(e -> e.weight));
+
+            Arrays.fill(key, Integer.MAX_VALUE);
+            key[0] = 0;
+            parent[0] = -1;
+            pq.offer(new Edge(0, 0));
+
+            int totalCost = 0;
+
+            while (!pq.isEmpty()) {
+                int u = pq.poll().destination;
+
+                if (inMST[u]) continue;
+                inMST[u] = true;
+
+                totalCost += key[u];
+
+                for (Edge edge : adjacencyList[u]) {
+                    int v = edge.destination;
+                    int weight = edge.weight;
+
+                    if (!inMST[v] && weight < key[v]) {
+                        key[v] = weight;
+                        parent[v] = u;
+                        pq.offer(new Edge(v, weight));
+                    }
+                }
+            }
+
+            System.out.println("Minimum Spanning Tree Edges:");
+            for (int i = 1; i < vertices; i++) {
+                System.out.println("Edge: " + parent[i] + " - " + i + " | Weight: " + key[i]);
+            }
+            System.out.println("Total Cost of MST: " + totalCost);
+        }
+    }
+
+    public static void main(String[] args) {
+        Graph graph = new Graph(6);
+
+        // Add edges: graph.addEdge(source, destination, weight)
+        graph.addEdge(0, 1, 4);
+        graph.addEdge(0, 2, 3);
+        graph.addEdge(1, 2, 1);
+        graph.addEdge(1, 3, 2);
+        graph.addEdge(2, 3, 4);
+        graph.addEdge(3, 4, 2);
+        graph.addEdge(4, 5, 6);
+
+        graph.primMST();
+    }
+}
