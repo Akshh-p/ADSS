@@ -1,0 +1,113 @@
+import java.util.Scanner;
+
+public class Main {
+    static class CircularQueue {
+        int front, rear, size;
+        int[] queue;
+        int capacity;
+
+        // Constructor to initialize the queue
+        public CircularQueue(int capacity) {
+            this.capacity = capacity;
+            queue = new int[capacity];
+            front = -1;
+            rear = -1;
+            size = 0;
+        }
+
+        // Check if the queue is full
+        public boolean isFull() {
+            return size == capacity;
+        }
+
+        // Check if the queue is empty
+        public boolean isEmpty() {
+            return size == 0;
+        }
+
+        // Add an order to the queue (enqueue)
+        public void enqueue(int orderId) {
+            if (isFull()) {
+                System.out.println("Queue is full! Cannot place more orders.");
+            } else {
+                if (front == -1) {  // First order placed
+                    front = 0;
+                }
+                rear = (rear + 1) % capacity;  // Circular increment
+                queue[rear] = orderId;
+                size++;
+                System.out.println("Order " + orderId + " placed successfully.");
+            }
+        }
+
+        // Serve an order (dequeue)
+        public void dequeue() {
+            if (isEmpty()) {
+                System.out.println("No orders to serve.");
+            } else {
+                System.out.println("Serving Order " + queue[front]);
+                front = (front + 1) % capacity;  // Circular increment
+                size--;
+            }
+        }
+
+        // Display current orders in the queue
+        public void display() {
+            if (isEmpty()) {
+                System.out.println("No orders to display.");
+                return;
+            }
+
+            System.out.print("Current Orders: ");
+            for (int i = 0; i < size; i++) {
+                System.out.print(queue[(front + i) % capacity] + " ");
+            }
+            System.out.println();
+        }
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        // Ask for the maximum number of orders
+        System.out.print("Enter the maximum number of orders the parlour can accept: ");
+        int maxOrders = sc.nextInt();
+
+        // Create a circular queue for storing orders
+        CircularQueue pizzaQueue = new CircularQueue(maxOrders);
+
+        // Simulate order placement and serving
+        int orderId = 1;
+        while (true) {
+            System.out.println("\n--- Pizza Parlour Menu ---");
+            System.out.println("1. Place a new order");
+            System.out.println("2. Serve an order");
+            System.out.println("3. Display all orders");
+            System.out.println("4. Exit");
+            System.out.print("Enter your choice: ");
+            int choice = sc.nextInt();
+
+            switch (choice) {
+                case 1:
+                    pizzaQueue.enqueue(orderId++);
+                    break;
+
+                case 2:
+                    pizzaQueue.dequeue();
+                    break;
+
+                case 3:
+                    pizzaQueue.display();
+                    break;
+
+                case 4:
+                    System.out.println("Exiting the system. Thank you for using Pizza Parlour!");
+                    sc.close();
+                    return;
+
+                default:
+                    System.out.println("Invalid choice! Please try again.");
+            }
+        }
+    }
+}
