@@ -1,0 +1,32 @@
+import java.util.Collections;
+import java.util.PriorityQueue;
+
+public class Main {
+    public static void main(String[] args) {
+        // Example array of marks obtained by students
+        int[] marks = {78, 85, 62, 90, 55, 88, 70, 95, 60, 73};
+
+        // Create a Max Heap using PriorityQueue with Collections.reverseOrder()
+        PriorityQueue<Integer> maxHeap = new PriorityQueue<>(Collections.reverseOrder());
+
+        // Add all marks to the Max Heap
+        for (int mark : marks) {
+            maxHeap.add(mark);
+        }
+
+        // The maximum mark is at the root of the Max Heap
+        int maximumMark = maxHeap.peek();
+
+        // Find the minimum mark using a loop
+        int minimumMark = Integer.MAX_VALUE;
+        for (int mark : marks) {
+            if (mark < minimumMark) {
+                minimumMark = mark;
+            }
+        }
+
+        // Print the results
+        System.out.println("Maximum Marks: " + maximumMark);
+        System.out.println("Minimum Marks: " + minimumMark);
+    }
+}
