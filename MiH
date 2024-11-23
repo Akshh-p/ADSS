@@ -1,0 +1,31 @@
+import java.util.PriorityQueue;
+
+public class Main {
+    public static void main(String[] args) {
+        // Example array of marks obtained by students
+        int[] marks = {78, 85, 62, 90, 55, 88, 70, 95, 60, 73};
+
+        // Create a Min Heap using PriorityQueue
+        PriorityQueue<Integer> minHeap = new PriorityQueue<>();
+
+        // Add all marks to the Min Heap
+        for (int mark : marks) {
+            minHeap.add(mark);
+        }
+
+        // The minimum mark is at the root of the Min Heap
+        int minimumMark = minHeap.peek();
+
+        // Find the maximum mark using a loop
+        int maximumMark = Integer.MIN_VALUE;
+        for (int mark : marks) {
+            if (mark > maximumMark) {
+                maximumMark = mark;
+            }
+        }
+
+        // Print the results
+        System.out.println("Minimum Marks: " + minimumMark);
+        System.out.println("Maximum Marks: " + maximumMark);
+    }
+}
